@@ -41,6 +41,26 @@ def input_file():
     print(function, equations, n_vars)
     
     return function, equations, n_vars
+    
+
+def input_console():
+    print("Для корректного ввода прочитайте правила оформления в файле README.md")
+    print("Введите функцию и цель исследования - min/max - через запятую и пробел после нее")
+    function = input().split(', ')
+    print(function)
+    
+    print("Введите количество переменных:")
+    n_vars = int(input())
+    
+    print("Введите количество ограничений:")
+    n = int(input())
+    
+    print(f"На каждой строке через enter введите {n} ограничений:")
+    equations = []
+    for i in range(n):
+        equations.append(input())
+        
+    return function, equations, n_vars
 
 
 if __name__ == '__main__':
