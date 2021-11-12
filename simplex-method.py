@@ -2,15 +2,9 @@ import numpy as np
 from fractions import Fraction
 
 
-def coeff_matrix(n_x_vars, equations, function):
+def make_coeff_table(n_x_vars, equations, function):
     """
-    :param n_x_vars: Число переменных в задаче ЛП
-
-    :param equations: Список элементов типа string
-    
-    :param function: Тип list с двумя параметрами:
-                            1. min или max
-                            2. функция, с которой работаем
+    По заданным ограничениям строим симплекс-таблицу
     """
     
     n_s_vars = 0
@@ -22,7 +16,7 @@ def coeff_matrix(n_x_vars, equations, function):
             n_s_vars += 1
             total_vars += 1
         
-    coeff_matrix = [[Fraction("0/1") for i in range(total_vars+1)] for j in range(len(equations)+1)]        
+    coeff_table = [[Fraction("0/1") for i in range(total_vars+1)] for j in range(len(equations)+1)]        
     s_index = n_x_vars # индекс, начиная с которого будут располагаться значения s в матрице
     
     for i in range(1, len(equations)+1):
@@ -33,20 +27,88 @@ def coeff_matrix(n_x_vars, equations, function):
                 coeff, index = equation[j].split('x_') # т.к. переменные у нас вида ax_i, то разделяя по x_, вытаскиваем коэффициент и индекс переменной
                 
                 if equation[j - 1] == '-':
-                    coeff_matrix[i][int(index) - 1] = Fraction("-" + coeff + "/1")
+                    coeff_table[i][int(index) - 1] = Fraction("-" + coeff + "/1")
                 else:
-                    coeff_matrix[i][int(index) - 1] = Fraction(coeff + "/1")
+                    coeff_table[i][int(index) - 1] = Fraction(coeff + "/1")
             
             elif equation[j] == '<=':
-                coeff_matrix[i][s_index] = Fraction("1/1")
+                coeff_table[i][s_index] = Fraction("1/1")
                 s_index += 1
                 
             elif equation[j] == '>=':
-                coeff_matrix[i][s_index] = Fraction("-1/1") 
+                coeff_table[i][s_index] = Fraction("-1/1") 
                 s_index += 1
+    
+    
+    goal_function = function[0].split(' ')
+            
+    for j in range(len(goal_function)):
+        if 'x_' in goal_function[j]:
+            if function[1] == 'max':
+                coeff, index = goal_function[j].split('x_')
                 
-    return coeff_matrix
+                if goal_function[j - 1] == '-':
+                    coeff_table[0][int(index) - 1] = Fraction(coeff + "/1")
+                else:
+                    coeff_table[0][int(index) - 1] = Fraction("-" + coeff + "/1")
+            else:
+                coeff, index = goal_function[j].split('x_')
+                
+                if goal_function[j - 1] == '-':
+                    coeff_table[0][int(index) - 1] = Fraction("-" + coeff + "/1")
+                else:
+                    coeff_table[0][int(index) - 1] = Fraction(coeff + "/1")
+                            
+    return coeff_table
 
+
+def unlimited_check(coeff_table):
+    """
+    Условие неограниченности задачи ЛП:
+        Если в ведущем столбце s нет положительных коэффициентов,
+        то значение задачи ЛП не ограничено (нет оптимального решения)
+        
+    Иначе:
+        Дописать
+        
+    Возвращает номер ведущей строки
+    """
+    minn = coeff_table[1][]
+    for i in range(len(coeff_table)):
+        
+    pass
+
+
+def optimality_check(coeff_table):
+    """
+    Проверка условия оптимальности:
+        Если все коэффициенты в нулевой строке симплексной таблицы,
+        соответствующие целевой функции, неотрицательны, то текущее
+        базисное решение оптимально
+    
+    Если существуют коэффициенты <0, то текущее базисное решение
+    можно улучшить за счет введения в базис переменной, выбирающейся из условия: 
+    c_s = min c_j; c_j<0
+    """
+    while not fl:
+        # Проверка на оптимальность
+        fl = True
+        min_c = 0
+        ind = 0
+        for i in range(len(coeff_table[0])):
+            if i < 0:
+                fl = False
+                if i < min_c:
+                    min_c = i
+                    column_index = ind
+            ind += 1
+                
+        if fl:
+            return coeff_table
+        else:
+            row_index = unlimited_check(coeff_table)
+            lead_elem = coeff_table[row_index][column_index]
+        
 
 def simplex(n_x_vars, equations, function):
     """
@@ -65,7 +127,8 @@ def simplex(n_x_vars, equations, function):
                             1. min или max
                             2. функция, с которой работаем
     """
-    coeff_matrix(n_x_vars, equations, function)
+    coeff_table = make_coeff_table(n_x_vars, equations, function)
+    print(coeff_table)
 
 
 def input_file():
@@ -84,8 +147,6 @@ def input_file():
         else:
             equations.append(line.replace('\n', ''))
         k += 1
-        
-    print(function, equations, n_vars)
     
     return function, equations, n_vars
     
