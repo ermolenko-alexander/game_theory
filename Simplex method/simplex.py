@@ -5,7 +5,7 @@ from iteration import optimality_check
 
 def simplex(n_x_vars, equations, function):
     """
-    :param vars: Число переменных в задаче ЛП
+    :param n_x_vars: Число переменных в задаче ЛП
 
     :param equations: Список элементов типа string со всеми ограничениями:
                         1. правила для переменной:
