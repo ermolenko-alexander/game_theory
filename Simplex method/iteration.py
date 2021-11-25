@@ -16,11 +16,11 @@ def unlimited_check(coeff_table, lead_column):
         a_rs - ведущий элемент
     
     Args:
-        param coeff_table(DataFrame): Симплекс-таблица
-        param lead_column(str): Название ведущего столбца
+        param coeff_table (DataFrame): Симплекс-таблица
+        param lead_column (str): Название ведущего столбца
 
     Returns:
-        lead_row(int): Номер ведущей строки
+        lead_row (int): Номер ведущей строки
     """
     fl = coeff_table[lead_column][1:].all() <= 0
     
@@ -58,11 +58,11 @@ def optimality_check(coeff_table, columns):
     Далее преобразовываем симлекс-таблицу с помощью метода Гаусса
     
     Args:
-        param coeff_table(DataFrame): Симплекс-таблица
-        param columns(list): Список названий столбцов
+        param coeff_table (DataFrame): Симплекс-таблица
+        param columns (list): Список названий столбцов
 
     Returns:
-        coeff_table(DataFrame): Итоговая симплекс-таблица
+        coeff_table (DataFrame): Итоговая симплекс-таблица
     """
     fl = (coeff_table.iloc[0]).all() > 0
     

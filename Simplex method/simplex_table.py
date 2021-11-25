@@ -4,6 +4,15 @@ import pandas as pd
 def make_coeff_table(n_x_vars, equations, function):
     """
     По заданным ограничениям строим симплекс-таблицу
+    
+    Args:
+        param n_x_vars (int): Количество переменных
+        param equations (list): Ограничения
+        param function (list): Тип исследования функции и сама функция
+
+    Returns:
+        coeff_table (DataFrame): Исходная симплекс-таблица
+        columns (list): Названия столбцов симплекс-таблицы
     """
     
     n_s_vars = 0
