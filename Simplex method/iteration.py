@@ -14,8 +14,13 @@ def unlimited_check(coeff_table, lead_column):
             b_r / a_rs = min(b_i / a_is), a_is > 0
         r - ведущая строка (lead_row)
         a_rs - ведущий элемент
-        
-    Возвращает номер ведущей строки
+    
+    Args:
+        param coeff_table(DataFrame): Симплекс-таблица
+        param lead_column(str): Название ведущего столбца
+
+    Returns:
+        lead_row(int): Номер ведущей строки
     """
     fl = coeff_table[lead_column][1:].all() <= 0
     
@@ -27,12 +32,15 @@ def unlimited_check(coeff_table, lead_column):
         
         res = []
         i = 0
+        min_row = a[0]
         for a in a_rs:
             if a > 0:
-                res.append(a / b[i])
-                i += 1
+                if a / b[i] < min_row:
+                    min_row = a / b[i]
+                    lead_row = i
+            i += 1
 
-        return min(res)
+        return lead_row
 
 
 def optimality_check(coeff_table, columns):
@@ -48,6 +56,13 @@ def optimality_check(coeff_table, columns):
     
     Когда ведущий столбец найден, проверяем условие неограниченности и ищем ведущую строку
     Далее преобразовываем симлекс-таблицу с помощью метода Гаусса
+    
+    Args:
+        param coeff_table(DataFrame): Симплекс-таблица
+        param columns(list): Список названий столбцов
+
+    Returns:
+        coeff_table(DataFrame): Итоговая симплекс-таблица
     """
     fl = (coeff_table.iloc[0]).all() > 0
     
