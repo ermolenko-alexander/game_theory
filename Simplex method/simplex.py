@@ -21,11 +21,21 @@ def simplex(n_x_vars, equations, function):
                             2. функция, с которой работаем
     """
     coeff_table, columns = make_coeff_table(n_x_vars, equations, function)
+    print("Исходная симплекс-таблица:")
+    print(coeff_table)
+    print()
 
     print("Итоговая симплекс-таблица:")
-    print(optimality_check(coeff_table, columns))
+    coeff_table = optimality_check(coeff_table, n_x_vars, columns)
+    print(coeff_table)
+    print()
+
     print("Оптимальное решение задачи")
-    # TO-DO (Влад)
+
+    for i in list(coeff_table.index[1:]):
+        if 'x' in i:
+            print(i, ' = ', coeff_table.loc[i]['basic'])
+    print(f"z = {coeff_table.loc[0]['basic']}")
 
 
 if __name__ == '__main__':
